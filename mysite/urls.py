@@ -22,6 +22,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
 
-
+    path('blog/del/', del_data),
     path('blog/save/', save_data),
 ]
