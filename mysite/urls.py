@@ -24,4 +24,5 @@ urlpatterns = [
 
     path('blog/del/', del_data),
     path('blog/save/', save_data),
+    path('blog/all/', get_all_posts)
 ]
