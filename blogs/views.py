@@ -19,7 +19,7 @@ def save_data(request):
 
     p = Post(author = "Sma", title = 'PostgreSQL Architecture', text = 'I am smaran the great', comments = "So nice")
     p.save()
-    return HttpResponse("OKAY") #k grxa why need this?
+    return HttpResponse("OKAY") 
 
 def del_data(request):
     d = Post.objects.filter(author='Smari').delete()
