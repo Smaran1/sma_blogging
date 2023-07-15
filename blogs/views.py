@@ -1,5 +1,6 @@
 from django.shortcuts import HttpResponse
 import os
+from mysite import settings
 import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
 django.setup()
