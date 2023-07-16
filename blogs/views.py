@@ -7,12 +7,15 @@ django.setup()
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializer import PostSerializer
-from .models import Post
+from blogs.serializer import PostSerializer
+from blogs.models import Post
+from rest_framework.generics import ListAPIView
 
-
-
-
+#Creating global pagination
+class BlogList(ListAPIView):
+    post = Post.objects.all()
+    serializer = PostSerializer
+   
 # Create your views here.
 
 def save_data(request): 

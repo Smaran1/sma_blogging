@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from blogs.views import *
-
+from blogs import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,5 +25,6 @@ urlpatterns = [
     path('blog/del/', del_data),
     path('blog/save/', save_data),
     path('blog/all/', get_all_posts),
-    path('blog/post/', postBlog)
+    path('blog/post/', postBlog),
+    path('blog/list/', views.BlogList.as_view()),
 ]
