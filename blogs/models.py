@@ -3,7 +3,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.apps import AppConfig
 # Create your models here.
-settings.configure() 
+#settings.configure() 
 class Post (models.Model):
     author = models.CharField(max_length=200)
     title = models.CharField(max_length=200)
