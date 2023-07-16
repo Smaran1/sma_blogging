@@ -32,6 +32,15 @@ def del_data(request):
 
 @api_view(['GET'])
 def get_all_posts(request):
-    post=Post.objects.all()
+    post=Post.objects.order_by('-created_date')
+    print(post)
     serializer= PostSerializer(post, many=True)
     return Response(serializer.data)
+
+@api_view(['POST'])
+def postBlog(request):
+    serializer = PostSerializer(data=request.data)
+    print(serializer)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
