@@ -52,69 +52,8 @@ def postBlog(request):
     
 
 
-def paginating(request, page_number):
-    # total_records = Post.objects.count()
-    per_page = 10
-    # starting = 1
-    posts = list(Post.objects.all())
-    listing = posts[page_number*per_page : ((page_number*per_page)+per_page)]
-    print(listing)
-    # sliced = posts[starting:per_page]
-    # print(sliced)
-    serializer= PostSerializer(listing, many = True)
-    print(serializer)
-    return Response(serializer.data)    
 
-
-
-# def paginating(request, page_number):
-#     per_page = 10
-#     starting = (page_number - 1) * per_page
-#     ending = page_number * per_page
-
-#     posts = list(Post.objects.all())
-#     listing = posts[starting:ending]
-    
-#     serializer = PostSerializer(listing, many=True)
-#     return Response(serializer.data)
-    
-
-
-
-# def paginating(request, pg_no):
-#     total_records = Post.objects.count()
-#     per_page = 10
-#     start_index = (pg_no - 1) * per_page
-#     end_index = pg_no * per_page
-
-#     # Fetch all Post objects from the database and convert them to a list
-#     posts = list(Post.objects.all())
-
-#     # Slice the list to get the appropriate subset of posts for the given page
-#     sliced_posts = posts[start_index:end_index]
-
-#     # Serialize the sliced_posts list using PostSerializer
-#     serializer = PostSerializer(sliced_posts, many=True)
-
-#     # Return the serialized data as JSON response using DRF's Response class
-#     return Response(serializer.data)
-
-
-# @api_view(['GET'])
-# def paginating(request, pg_no):
-#     total_records = Post.objects.count()
-#     per_page = 10
-#     start_index = (pg_no - 1) * per_page
-#     end_index = pg_no * per_page
-
-#     # Fetch all Post objects from the database
-#     posts = Post.objects.all()
-
-#     # Slice the queryset to get the appropriate subset of posts for the given page
-#     sliced_posts = posts[start_index:end_index]
-
-#     # Serialize the sliced_posts queryset using PostSerializer
-#     serializer = PostSerializer(sliced_posts, many=True)
-
-#     # Return the serialized data as JSON response using DRF's Response class
-#     return Response(serializer.data)
+class get_paginated_posts(ListAPIView):
+    post=Post.objects.order_by('-created_date')
+    serializer= PostSerializer(post, many=True)
+  

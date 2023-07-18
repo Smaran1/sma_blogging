@@ -28,6 +28,6 @@ urlpatterns = [
     path('blog/post/', postBlog),
     # path('blog/list/', views.BlogList.as_view()),
     # path('blog/post/<int:page_number>/', paginating),
-    path('blog/post/<int:page_number>/', views.paginating, name='paginating'),
+    path('blog/post/page/', views.get_paginated_posts.as_view()),
 ]
 
