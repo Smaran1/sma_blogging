@@ -26,5 +26,8 @@ urlpatterns = [
     path('blog/save/', save_data),
     path('blog/all/', get_all_posts),
     path('blog/post/', postBlog),
-    path('blog/list/', views.BlogList.as_view()),
+    # path('blog/list/', views.BlogList.as_view()),
+    # path('blog/post/<int:page_number>/', paginating),
+    path('blog/post/<int:page_number>/', views.paginating, name='paginating'),
 ]
+
