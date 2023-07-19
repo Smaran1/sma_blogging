@@ -20,40 +20,42 @@ from rest_framework.generics import ListAPIView
 
 # Create your views here.
 
-def save_data(request): 
+# def save_data(request): 
 
-    p = Post(author = "Sma", title = 'PostgreSQL Architecture', text = 'I am smaran the great', comments = "So nice")
-    p.save()
-    return HttpResponse("OKAY") 
+#     p = Post(author = "Sma", title = 'PostgreSQL Architecture', text = 'I am smaran the great', comments = "So nice")
+#     p.save()
+#     return HttpResponse("OKAY") 
 
-def del_data(request):
-    d = Post.objects.filter(author='Smari').delete()
-    return HttpResponse()
-
-# def get_all_db(request):
-#     db= Post.objects.all()
+# def del_data(request):
+#     d = Post.objects.filter(author='Smari').delete()
 #     return HttpResponse()
 
+# # def get_all_db(request):
+# #     db= Post.objects.all()
+# #     return HttpResponse()
 
-@api_view(['GET'])
-def get_all_posts(request):
-    post=Post.objects.order_by('-created_date')
-    print(post)
-    serializer= PostSerializer(post, many=True)
-    return Response(serializer.data)
 
-@api_view(['POST'])
-def postBlog(request):
-    serializer = PostSerializer(data=request.data)
-    print(serializer)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
+# @api_view(['GET'])
+# def get_all_posts(request):
+#     post=Post.objects.order_by('-created_date')
+#     print(post)
+#     serializer= PostSerializer(post, many=True)
+#     return Response(serializer.data)
+
+# @api_view(['POST'])
+# def postBlog(request):
+#     serializer = PostSerializer(data=request.data)
+#     print(serializer)
+#     if serializer.is_valid():
+#         serializer.save()
+#         return Response(serializer.data)
     
 
 
 
-class get_paginated_posts(ListAPIView):
-    post=Post.objects.order_by('-created_date')
-    serializer= PostSerializer(post, many=True)
+class Get_paginated_posts(ListAPIView):
+    post=Post.objects.all()
+    print(post)
+    serializer= PostSerializer
+    print(serializer)
   
