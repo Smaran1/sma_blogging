@@ -11,14 +11,7 @@ from rest_framework.response import Response
 from blogs.serializer import PostSerializer
 from blogs.models import Post
 from rest_framework.generics import ListAPIView
-
-#Creating global pagination
-# class BlogList(ListAPIView):
-#     post = Post.objects.all()
-#     serializer = PostSerializer
-   
-
-# Create your views here.
+from django.http import JsonResponse
 
 def save_data(request): 
 
@@ -29,10 +22,6 @@ def save_data(request):
 def del_data(request):
     d = Post.objects.filter(author='Smari').delete()
     return HttpResponse()
-
-# def get_all_db(request):
-#     db= Post.objects.all()
-#     return HttpResponse()
 
 
 @api_view(['GET'])
@@ -51,70 +40,68 @@ def postBlog(request):
         return Response(serializer.data)
     
 
-
+@api_view(['GET'])
 def paginating(request, page_number):
-    # total_records = Post.objects.count()
     per_page = 10
-    # starting = 1
-    posts = list(Post.objects.all())
-    listing = posts[page_number*per_page : ((page_number*per_page)+per_page)]
-    print(listing)
-    # sliced = posts[starting:per_page]
-    # print(sliced)
-    serializer= PostSerializer(listing, many = True)
+    posts = Post.objects.all()[page_number*per_page : ((page_number*per_page)+per_page)]
+    serializer= PostSerializer(posts, many = True)
     print(serializer)
     return Response(serializer.data)    
 
 
-
-# def paginating(request, page_number):
-#     per_page = 10
-#     starting = (page_number - 1) * per_page
-#     ending = page_number * per_page
-
-#     posts = list(Post.objects.all())
-#     listing = posts[starting:ending]
-    
-#     serializer = PostSerializer(listing, many=True)
-#     return Response(serializer.data)
-    
+@api_view(['GET'])
+def paginating_offset(request, limit, offset_row):
+    # limit = 10
+    # offset_row = 7
+    posts = Post.objects.all()[offset_row:(offset_row+limit)]
+    serializer= PostSerializer(posts, many = True)
+    print(serializer)
+    return Response(serializer.data)    
 
 
-
-# def paginating(request, pg_no):
-#     total_records = Post.objects.count()
-#     per_page = 10
-#     start_index = (pg_no - 1) * per_page
-#     end_index = pg_no * per_page
-
-#     # Fetch all Post objects from the database and convert them to a list
-#     posts = list(Post.objects.all())
-
-#     # Slice the list to get the appropriate subset of posts for the given page
-#     sliced_posts = posts[start_index:end_index]
-
-#     # Serialize the sliced_posts list using PostSerializer
-#     serializer = PostSerializer(sliced_posts, many=True)
-
-#     # Return the serialized data as JSON response using DRF's Response class
-#     return Response(serializer.data)
+# def pagination_search(request, search):
+#     # if request.method == 'GET':
+#         posts = Post.objects.all()
+       
+        
+#         l = []
+#         for post in posts:
+#             if search in post.title:
+#                 search_post = post.title
+#                 l.append(search_post)
+#                 print(l)
 
 
-# @api_view(['GET'])
-# def paginating(request, pg_no):
-#     total_records = Post.objects.count()
-#     per_page = 10
-#     start_index = (pg_no - 1) * per_page
-#     end_index = pg_no * per_page
+#         return JsonResponse(l)    
 
-#     # Fetch all Post objects from the database
-#     posts = Post.objects.all()
+    # {jtu:80}
+    # str = "{"+"key"+":"+"value"+"}"
 
-#     # Slice the queryset to get the appropriate subset of posts for the given page
-#     sliced_posts = posts[start_index:end_index]
+# def pagination_search(request, search):
+#         posts = Post.objects.filter(title__icontains = search)
+        
+#         titles = []
+#         for post in posts:
+#             title = post.title
+#             titles.append(title)
+#         print(titles)
+#         return JsonResponse(titles, safe = False)    
 
-#     # Serialize the sliced_posts queryset using PostSerializer
-#     serializer = PostSerializer(sliced_posts, many=True)
 
-#     # Return the serialized data as JSON response using DRF's Response class
-#     return Response(serializer.data)
+def pagination_search(request, search, page_number, page_size):
+        posts = Post.objects.filter(title__icontains = search)
+        post_pag = posts[page_number*page_size:page_number*page_size+page_number]
+        print(post_pag)    
+        titles = post_pag.values_list('title', flat=True)
+        print(titles)
+        return JsonResponse(list(titles), safe = False)
+
+
+
+
+
+
+
+
+
+
