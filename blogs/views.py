@@ -97,6 +97,48 @@ def pagination_search(request, search, page_number, page_size):
         return JsonResponse(list(titles), safe = False)
 
 
+class global_pag():
+    page_number = 2
+    page_size = 3
+
+    
+    def __init__(self, page_number, page_size):     
+        self.page_number = page_number
+        self.page_size = page_size 
+        
+        # return JsonResponse(list(data), safe = False )
+    
+
+    def all(self):
+        data = Post.objects.all()[self.page_number*self.page_size:self.page_number*self.page_size+self.page_number]  
+        l_data = list(data)
+        return l_data
+
+
+
+
+@api_view(['GET'])
+def get_all_posts_pag(request):
+    sd = global_pag(2,3)
+    post = sd.all()
+    l = []
+    for p in post:
+        title = p.title
+        author = p.author
+        text = p.text
+        created_date = p.created_date
+        published_date = p.published_date
+        data = [title, author, text, created_date, published_date]
+        l.append(data)
+
+
+
+    print(l)
+
+    return JsonResponse(l, safe = False)
+
+
+
 
 
 
