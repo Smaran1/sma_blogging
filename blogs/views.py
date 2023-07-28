@@ -99,34 +99,27 @@ def pagination_search(request, search, page_number, page_size):
 
 
 class global_pag():
-    page_number = 2
-    page_size = 3
 
-    
+
     def __init__(self, page_number, page_size):     
         self.page_number = page_number
         self.page_size = page_size 
+
+
+    def paginating(self, queryset):
         
-        # return JsonResponse(list(data), safe = False )
+        paginated = queryset[self.page_number*self.page_size:self.page_number*self.page_size+self.page_number]  
+        l_data = list(paginated)
+        return l_data
     
 
-    def all(self):
-        data = Post.objects.all()[self.page_number*self.page_size:self.page_number*self.page_size+self.page_number]  
-        l_data = list(data)
-        return l_data
-
-    def searched(self, search):
-        data = Post.objects.filter(Q(title__icontains = search) | Q(author__icontains = search) |  Q(text__icontains = search))
-        print(data)
-        p_data = data[self.page_number*self.page_size:self.page_number*self.page_size+self.page_number]
-        l_data = list(p_data)
-        return l_data
 
 
 @api_view(['GET'])
 def get_all_posts_pag(request):
     sd = global_pag(2,3)
-    post = sd.all()
+    queryset = Post.objects.all()
+    post = sd.paginating(queryset=queryset)
     l = []
     for p in post:
         title = p.title
@@ -140,12 +133,11 @@ def get_all_posts_pag(request):
     return JsonResponse(l, safe = False)
 
 
-
-
 @api_view(['GET'])
 def get_searched_posts_pag(request, search):
+    queryset = Post.objects.filter(Q(title__icontains = search) | Q(author__icontains = search) |  Q(text__icontains = search))
     sd = global_pag(2,3)
-    s_post = sd.searched(search)
+    s_post = sd.paginating(queryset=queryset)
     l = []
     for p in s_post:
         title = p.title
