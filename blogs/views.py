@@ -108,7 +108,7 @@ class global_pag():
 
     def paginating(self, queryset):
         
-        paginated = queryset[self.page_number*self.page_size:self.page_number*self.page_size+self.page_number]  
+        paginated = queryset[self.page_number*self.page_size:self.page_number*self.page_size+self.page_size]  
         l_data = list(paginated)
         return l_data
     
@@ -116,8 +116,8 @@ class global_pag():
 
 
 @api_view(['GET'])
-def get_all_posts_pag(request):
-    sd = global_pag(2,3)
+def get_all_posts_pag(request, page_number, page_size):
+    sd = global_pag(page_number,page_size)
     queryset = Post.objects.all()
     post = sd.paginating(queryset=queryset)
     l = []
@@ -134,9 +134,9 @@ def get_all_posts_pag(request):
 
 
 @api_view(['GET'])
-def get_searched_posts_pag(request, search):
+def get_searched_posts_pag(request, search, page_number, page_size):
     queryset = Post.objects.filter(Q(title__icontains = search) | Q(author__icontains = search) |  Q(text__icontains = search))
-    sd = global_pag(2,3)
+    sd = global_pag(page_number, page_size)
     s_post = sd.paginating(queryset=queryset)
     l = []
     for p in s_post:

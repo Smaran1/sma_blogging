@@ -30,8 +30,8 @@ urlpatterns = [
     path('page/<int:page_number>/', paginating),
     path('page/<int:limit>/<int:offset_row>/', paginating_offset),
     path('page/<str:search>/<int:page_number>/<int:page_size>/', pagination_search ),
-    path('gpage/', get_all_posts_pag ),
-    path('gpage/<str:search>/', get_searched_posts_pag)
+    path('gpage/<int:page_number>/<int:page_size>/', get_all_posts_pag ),
+    path('gpage/<str:search>/<int:page_number>/<int:page_size>/', get_searched_posts_pag)
     # path('blog/post/<int:page_number>/', views.paginating, name='paginating'),
 ]
 
