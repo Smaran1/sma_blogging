@@ -1,4 +1,5 @@
 from django.shortcuts import HttpResponse
+
 import os
 from mysite import settings
 import django
@@ -7,13 +8,11 @@ django.setup()
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .serializer import PostSerializer
-from .models import Post
-
-
-
-
-# Create your views here.
+from blogs.serializer import PostSerializer
+from blogs.models import Post
+from rest_framework.generics import ListAPIView
+from django.http import JsonResponse
+from django.db.models import Q
 
 def save_data(request): 
 
@@ -24,10 +23,6 @@ def save_data(request):
 def del_data(request):
     d = Post.objects.filter(author='Smari').delete()
     return HttpResponse()
-
-# def get_all_db(request):
-#     db= Post.objects.all()
-#     return HttpResponse()
 
 
 @api_view(['GET'])
@@ -44,3 +39,117 @@ def postBlog(request):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
+    
+
+@api_view(['GET'])
+def paginating(request, page_number):
+    per_page = 10
+    posts = Post.objects.all()[page_number*per_page : ((page_number*per_page)+per_page)]
+    serializer= PostSerializer(posts, many = True)
+    print(serializer)
+    return Response(serializer.data)    
+
+
+@api_view(['GET'])
+def paginating_offset(request, limit, offset_row):
+    # limit = 10
+    # offset_row = 7
+    posts = Post.objects.all()[offset_row:(offset_row+limit)]
+    serializer= PostSerializer(posts, many = True)
+    print(serializer)
+    return Response(serializer.data)    
+
+
+# def pagination_search(request, search):
+#     # if request.method == 'GET':
+#         posts = Post.objects.all()
+       
+        
+#         l = []
+#         for post in posts:
+#             if search in post.title:
+#                 search_post = post.title
+#                 l.append(search_post)
+#                 print(l)
+
+
+#         return JsonResponse(l)    
+
+    # {jtu:80}
+    # str = "{"+"key"+":"+"value"+"}"
+
+# def pagination_search(request, search):
+#         posts = Post.objects.filter(title__icontains = search)
+        
+#         titles = []
+#         for post in posts:
+#             title = post.title
+#             titles.append(title)
+#         print(titles)
+#         return JsonResponse(titles, safe = False)    
+
+
+def pagination_search(request, search, page_number, page_size):
+        posts = Post.objects.filter(title__icontains = search)
+        post_pag = posts[page_number*page_size:page_number*page_size+page_number]
+        print(post_pag)    
+        titles = post_pag.values_list('title', flat=True)
+        print(titles)
+        return JsonResponse(list(titles), safe = False)
+
+
+class global_pag():
+
+
+    def __init__(self, page_number, page_size):     
+        self.page_number = page_number
+        self.page_size = page_size 
+
+
+    def paginating(self, queryset):
+        
+        paginated = queryset[self.page_number*self.page_size:self.page_number*self.page_size+self.page_size]  
+        l_data = list(paginated)
+        return l_data
+    
+
+
+
+@api_view(['GET'])
+def get_all_posts_pag(request, page_number, page_size):
+    sd = global_pag(page_number,page_size)
+    queryset = Post.objects.all()
+    post = sd.paginating(queryset=queryset)
+    l = []
+    for p in post:
+        title = p.title
+        author = p.author
+        text = p.text
+        created_date = p.created_date
+        published_date = p.published_date
+        data = [title, author, text, created_date, published_date]
+        l.append(data)
+    print(l)
+    return JsonResponse(l, safe = False)
+
+
+@api_view(['GET'])
+def get_searched_posts_pag(request, search, page_number, page_size):
+    queryset = Post.objects.filter(Q(title__icontains = search) | Q(author__icontains = search) |  Q(text__icontains = search))
+    sd = global_pag(page_number, page_size)
+    s_post = sd.paginating(queryset=queryset)
+    l = []
+    for p in s_post:
+        title = p.title
+        author = p.author
+        text = p.text
+        created_date = p.created_date
+        published_date = p.published_date
+        data = [title, author, text, created_date, published_date]
+        l.append(data)
+    print(l)
+    return JsonResponse(l, safe = False)
+
+
+
+

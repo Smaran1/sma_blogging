@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from blogs.views import *
-
+from blogs import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,5 +25,13 @@ urlpatterns = [
     path('blog/del/', del_data),
     path('blog/save/', save_data),
     path('blog/all/', get_all_posts),
-    path('blog/post/', postBlog)
+    path('blog/post/', postBlog),
+    # path('blog/list/', views.BlogList.as_view()),
+    path('page/<int:page_number>/', paginating),
+    path('page/<int:limit>/<int:offset_row>/', paginating_offset),
+    path('page/<str:search>/<int:page_number>/<int:page_size>/', pagination_search ),
+    path('gpage/<int:page_number>/<int:page_size>/', get_all_posts_pag ),
+    path('gpage/<str:search>/<int:page_number>/<int:page_size>/', get_searched_posts_pag)
+    # path('blog/post/<int:page_number>/', views.paginating, name='paginating'),
 ]
+
