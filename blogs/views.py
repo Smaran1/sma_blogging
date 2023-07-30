@@ -1,46 +1,62 @@
-from django.shortcuts import HttpResponse
-import os
-from mysite import settings
-import django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
-django.setup()
-from django.shortcuts import render
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from .serializer import PostSerializer
+from django.shortcuts import HttpResponse 
+
+
+from django.http import JsonResponse  , request
+
+
+
+
+
+
 from .models import Post
 
 
 
 
-# Create your views here.
+class GlobalPagination():
+    query_set = None
+    page_size = 10
+        
+    
+    @staticmethod
+    def get_current_page_num(request : request):
+            
+        page_num =  request.GET.get('page_num')
 
-def save_data(request): 
+        if page_num is None: 
+            return 1
+        return int(page_num)
+    
 
-    p = Post(author = "Sma", title = 'PostgreSQL Architecture', text = 'I am smaran the great', comments = "So nice")
-    p.save()
-    return HttpResponse("OKAY") 
+    
+    def calculate_page_indices(self , page_num : int ):
 
-def del_data(request):
-    d = Post.objects.filter(author='Smari').delete()
-    return HttpResponse()
+        if page_num  < 1: 
+            raise Exception("Page number must be greater than or equal to 1")
+        
+        start_index  =  (page_num  -1) * self.page_size
+        end_index =  start_index + self.page_size
 
-# def get_all_db(request):
-#     db= Post.objects.all()
-#     return HttpResponse()
+        return start_index , end_index
 
+        
+                               
+    @classmethod
+    def as_view(cls, request: request):
+        page_num = cls.get_current_page_num(request)
 
-@api_view(['GET'])
-def get_all_posts(request):
-    post=Post.objects.order_by('-created_date')
-    print(post)
-    serializer= PostSerializer(post, many=True)
-    return Response(serializer.data)
+        s_at , e_at =  cls.calculate_page_indices(cls , page_num=page_num)
 
-@api_view(['POST'])
-def postBlog(request):
-    serializer = PostSerializer(data=request.data)
-    print(serializer)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
+        posts_res = list(cls.query_set[s_at : e_at].values())
+    
+
+        return JsonResponse({
+            "results": posts_res,
+            "page_num": page_num,
+            "page_size" :  cls.page_size
+        })
+
+        
+class AllPosts(GlobalPagination):
+    query_set =  Post.objects.all()
+    page_size = 50
