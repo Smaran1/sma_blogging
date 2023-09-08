@@ -15,11 +15,11 @@ Including another URLconf
 """
 
 from django.urls import path
-from blogs.views import  AllPosts
+from blogs.views import  AllPost
 
 
 
 urlpatterns = [
-    path('blogs/' , AllPosts.as_view)
+    path('blogs/' , AllPost.as_view)
 ]
 
