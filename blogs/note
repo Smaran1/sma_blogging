@@ -1,0 +1,30 @@
+paginate grda k k grne?
+
+page size thapaune
+page number wala facility 
+mero model / database/ orm dekhin data taanne esto parale ki mathi ko 
+    page number ra size sanga milos
+orm dekhin kasto khale data aunxa? postObject type wala ma aunxa
+jun chei maile milauna prxa 
+PostObject ma kasto khae data aunxa full garera hernu 
+
+
+
+
+1)malai euta class chayeyo jsma chei 
+i)just pagination ko logic hoss
+ii)ani tyo esto parako ko logic hoss jsle chei 
+junei pani filtered data xa ni that comes out as
+a result table teslai chei paginate gari dios.
+2)malai then euta function chaheyo jsma chei 
+tyo filtered data ko logic hunxa,
+aba yo function le chei just mathi ko pagination wala logic call grba paryo ani bhayo 
+
+
+
+mero group pagination banyo 
+but tesma just tyo limit dekhayo aru ko next ra prev grna milena
+anba i need a code:
+tyo paginated ko euta group hoss
+ani tyo group group banyos sab data ko 
+then ma loop grda hunxa ki ? like euta lai haina ki tyo group / list lai 
